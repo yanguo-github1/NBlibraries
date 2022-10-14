@@ -1,0 +1,68 @@
+orchestration_command_type: INSTALL_TRIGGER_DIAGNOSIS
+ 
+global_variable:
+    # - $root_ni
+ 
+variable:
+    intent_path: "{$root_ni}/Multiple Command Check/L1 - Device Check [Cisco IOS]"
+    incident_type: "Network Connection is Slow"
+ 
+validate:
+  - action: is_intent_exist
+    intent_path: $intent_path
+  - action: is_virtual_incident_type_exist
+    incident_type: $incident_type
+    data_field: [device, description]
+  #- action: is_System_data_exist
+  #  type: L3 Neighbors
+  
+  #- action: is_NCT_table_exist
+  #  NCT_table: BGP Neighbor Table
+  #  neighbor_column: Neighbor
+ 
+ 
+install:
+    intent_path: $intent_path
+    diagnosis_name: "Check Device Basic Config"
+    description: Troubleshoot network connection problems.
+    enable: true
+    install_if_trigger_diagnosis_exist: overwrite                     # overwrite or skip
+    incident_type: $incident_type
+    incident_filter:                                                  # optional setting for filtering incoming incident which belongs to selected incident type
+        conditions:
+            - condition: A
+              data_field: device
+              operator: is_not_null                                          # contains, does_not_contain, matches, does_not_match, is_not_null
+              keyword: 
+            - condition: B
+              data_field: description
+              operator: contains
+              keyword: connection
+            - condition: C
+              data_field: description
+              operator: contains
+              keyword: slow            
+        boolean: A and (B or C)
+ 
+    extrapolated_device_from_data_field: [device, description]
+    extrapolated_device_method_fuzzy_matching: true
+    extend_device_method:                                            # incident_device_only, incident_device_system_data, incident_device_NCT_neighbor
+        method: incident_device_only 
+        
+        # method: incident_device_system_data
+        # type: L3 Neighbors
+        #
+        #method: incident_device_NCT_neighbor
+        #NCT_table: BGP Neighbor Table
+        #neighbor_column: Neighbor
+    execution_mode: both                                              # both, execute_intent, deliver_intent_map
+    set_device_inside_incident: member_device_with_alert_status_code  # member_device_with_alert_status_code, all_member_devices
+    create_message_by_status_code: true
+    map_message: "The device $device has some issues about basic configuration, please check."                     # allow to include varialbe in message
+    subscription_from_preventive_automation:
+        enable: true
+        period: 2:00                                                  # timespan means 2 hours 23 mins,  12.3:23:33 means 12 days 3 hours 23 mins 33 seconds
+        alert_type: both                                              # both, probe_alert, intent_alert
+        intent_tag:                                                   # only available when the alert type is both or intent alert
+            #- interface
+            #- ospf 

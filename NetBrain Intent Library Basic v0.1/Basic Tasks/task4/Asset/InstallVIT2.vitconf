@@ -1,0 +1,29 @@
+orchestration_command_type: INSTALL_VIRTUAL_INCIDENT_TYPE
+ 
+global_variable:
+    #
+ 
+variable:
+    #
+ 
+ 
+validate:
+  - action: is_hash_tag_exist
+    assoicated_hash_tag:
+       - "#_device"
+       - "#_interface_ip"
+ 
+
+install:
+    name: "Network Failover"
+    install_if_incident_type_exist: overwrite                                # overwrite, skip
+    description: "Troubleshoot network failover problems."
+    data_field_type: static                                                  # static or dynamic
+    # assoicated_hash_tag: ["#_device"] #required field only if type is dynamic
+    data_fields:
+        - name: device
+          description: Device hostname
+          mandatory: true
+        - name: description
+          description: Provide information about the device problems.
+          mandatory: true

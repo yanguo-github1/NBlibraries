@@ -1,0 +1,23 @@
+orchestration_command_type: INSTALL_INTENT
+ 
+global_variable:
+    - root_ni
+    - intent_timer
+variable:
+    intent_path: "{$root_ni}/Single Command Check/cmd-show ip protocol"
+ 
+validate:
+ 
+install:
+    intent_path: $intent_path    # full path name such as All Network Intents/cisco/ni_1, must exist already
+    install_if_intent_installation_exist: overwrite           # overwrite or skip
+    group: default
+    intent_mode: template                                     # only support "template" in this version
+ 
+    #decode_settings
+    update_intent_baseline_periodically:       
+        enable: true # false
+        intent_timer: $intent_timer                    # use built-in timer or input variable $intent_timer, intent_timer is global variable.
+                                                              # trigger_preventive_automation_timer: weekly_sunday_6PM  #whether to trigger preventive autoamtion, move to #3 Install Intent Preventive Automation
+    auto_intent: true                                         # whether enable auto intent service
+    decode_method: one_time_decode                            # decode method, one_time_decode or recurring_decode

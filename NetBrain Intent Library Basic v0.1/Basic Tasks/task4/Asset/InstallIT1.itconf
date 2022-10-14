@@ -1,0 +1,44 @@
+orchestration_command_type: INSTALL_INTERACTIVE_TRIGGER
+ 
+global_variable:
+    # - cc_list
+    # - bcc_list
+variable:
+    incident_type: "Network Connection is Slow"
+ 
+validate:
+  - action: is_virtual_incident_type_exist
+    incident_type: $incident_type
+    data_field: [device, description]
+ 
+install:
+    incident_type: $incident_type                             #required field
+    self_service:                                             #optional field, but this is required if email trigger is not defined
+        data_field: [device, description]                   #required field
+        input_dialog_configuration:                           #required field
+           title: Diagnosis for Network Connection Slowness      #optional field, default value refers  to UI 'diagnosis for incident type name'
+           instruction: "Please enter the problematic device name and the description of device problem."           #optional field, default value 'Please fill in the value'
+           input_fields:                                      #required field
+             - data_field: device                             #required field
+               device_field: true                             #required field
+               prompt: Device Name                            #required field              
+               hint: Please enter the problematic device name.              #optional field    
+               input_type: multiple_selection                 #required field,single_selection, multiple_selection
+               mandatory: true                                #required field,这个字段如果在incident type那里mandatory是true的话，这里也必须为true
+               candidate_value:                               #required field,only available when the input field's device_field: true
+                 method: context_device                       #required field,currently, only context_device is a valid option
+                 option: device_in_map_and_incident           #required field,device_in_map_and_incidnt, device_in_map, device_in_incident
+             - data_field: description
+               device_field: False
+               prompt: Problem Description
+               hint: "Please enter the description of device problem including 'connection' or 'slow'."
+               input_type: single_selection
+               mandatory: true
+           button:                                            #optional
+               confirm_button_name: OK             #optional, defaults to"OK"
+               cancel_button_name: Cancel                     #optional, defaults to "Cancel"
+    # email_trigger:                                            #optional field, but this is required if self service is not defined
+    #     data_field: [device_name, mgmt_ip]                    #required
+    #     reply_email_list:                                     #optional
+    #         cc: $cc_list
+    #         bcc: $bcc_list

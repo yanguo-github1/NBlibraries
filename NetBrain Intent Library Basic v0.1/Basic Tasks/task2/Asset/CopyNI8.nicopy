@@ -1,0 +1,20 @@
+orchestration_command_type: COPY_INTENT
+ 
+global_variable:
+    - conflict_option
+    - root_ni
+variable:
+    intent_path: "{$root_ni}/Multiple Command Check/"  # $root_ni is defined in library.yaml
+    intent_name: "L3 - OSPF Check [Cisco IOS].xni"
+
+validate:
+    #
+ 
+install:
+    src: "$intent_name"      #required field
+    dest: $intent_path       #required field, only path like All Network Intents/cisco/
+    install_if_no_qualified_device: true  #required field
+    install_if_intent_exist: $conflict_option  #required field, only accept overwrite or skip
+    
+
+    

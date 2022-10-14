@@ -1,0 +1,54 @@
+version: "0.1"
+description: "This library contains a set of sample Network Intent Templates and Self Service Diagnoses. After installation, these intent templates can decode Network Intents out of your network, and enable intent-based automation features such as auto-intent for each map, among other capabilities."
+publish_time: 2022-09-30T16:20:00
+ 
+# define global variables. there are built-in variables such as $err_no, $err_msg
+variables:
+  - name: $root_ni
+    type: string  # string, number, true/false
+    label: Network Intent Folder
+    prompt: "please input the NI root folder to install Network Intent asset"  # not prompt if not given
+    default_value: All Network Intents/Recommended Templates/
+    mandatory: true
+  - name: $intent_timer
+    type: timer
+    label: Intent Timer
+    prompt: "this time is for scheduling decode baseline"
+    default_value: "Weekly Friday 6PM"
+    mandatory: true
+  - name: $emailto
+    type: email
+    label: PAF Email to
+    prompt: "this is the email list for preventive automation"
+    default_value:
+  - name: $overwriteOption
+    type: string
+    label: Overwrite Option
+    options:
+       - overwrite
+       - skip
+    prompt: "please select the option"
+    default_value: overwrite
+  - name: $conflict_option
+    type: string
+    label: Conflict Option
+    options:
+       - overwrite
+       - skip
+    prompt: "please select the option"
+    default_value: overwrite
+folders:
+  - name: Basic Tasks
+    index: "1"
+    tasks:
+      - name: Install Intents for Configuration Check
+        index: "1.1"
+      - name: Install Intents for Multi Command Check
+        index: "1.2"
+      - name: Install Intents for Single Command Check
+        index: "1.3"
+      - name: Install Self-Service Diagnosis
+        index: "1.4"
+        dependency:
+            - Basic Tasks/Install Intents for Configuration Check   #this is [folder name]/[task name]
+            - Basic Tasks/Install Intents for Multi Command Check

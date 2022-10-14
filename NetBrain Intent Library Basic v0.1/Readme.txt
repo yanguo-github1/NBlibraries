@@ -1,0 +1,1 @@
+This library contains a set of sample Network Intent Templates and Self Service Diagnoses. After installation, these intent templates can decode Network Intents out of your network, and enable intent-based automation features such as auto-intent for each map, among other capabilities.
